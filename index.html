@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeaveFlow | Leave Management</title>
+
+<style>
+:root {
+    --green: #17634b;
+    --light: #eaf4ed;
+    --bg: #f5f7f5;
+    --ink: #24352b;
+    --muted: #738078;
+    --border: #e3eae4;
+    --red: #c83e3e;
+    --orange: #a87313;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+
+button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+/* LOGIN */
+
+.auth-screen {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #e5f2e7, #f8faf7);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 15px 45px #143f2d10;
+}
+
+.brand {
+    font-size: 27px;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: -1px;
+}
+
+.brand span { color: #e4a344; }
+
+.auth-mark {
+    font-size: 28px;
+    margin: 22px 0 15px;
+}
+
+.auth-card h1 { font-size: 26px; margin-bottom: 8px; }
+
+.subtext {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+}
+
+.field { margin-top: 16px; }
+
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.field input, .field select, .field textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d9e3da;
+    border-radius: 9px;
+    background: white;
+}
+
+.field textarea { resize: vertical; min-height: 80px; }
+
+.btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 12px 16px;
+    font-weight: 700;
+}
+
+.btn:hover { background: #104b37; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.full { width: 100%; margin-top: 20px; }
+
+.secondary {
+    background: white;
+    color: var(--green);
+    border: 1px solid #cbdccf;
+}
+
+.approve {
+    background: #e7f5ea;
+    color: #176d40;
+    border: 1px solid #c6e7d0;
+}
+
+.reject {
+    background: #fff0f0;
+    color: var(--red);
+    border: 1px solid #f1cccc;
+}
+
+.switch {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 18px;
+}
+
+.link-btn {
+    border: none;
+    background: none;
+    color: var(--green);
+    font-weight: 800;
+}
+
+.error {
+    color: var(--red);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.demo {
+    margin-top: 20px;
+    padding: 12px;
+    background: #f4f8f4;
+    border: 1px dashed #cbdccf;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.9;
+}
+
+.demo strong { color: var(--ink); }
+
+/* APP LAYOUT */
+
+.app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 23px 15px;
+    background: white;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .brand { padding: 0 10px 30px; }
+
+.nav-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #99a49b;
+    font-weight: 800;
+    padding: 0 10px 10px;
+    text-transform: uppercase;
+}
+
+.nav { display: grid; gap: 6px; }
+
+.nav button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    color: #58685f;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.nav button:hover, .nav button.active {
+    background: var(--light);
+    color: var(--green);
+}
+
+.nav .count {
+    margin-left: auto;
+    background: #dcefe2;
+    padding: 3px 7px;
+    border-radius: 20px;
+    font-size: 10px;
+}
+
+.user-box {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.user-line { display: flex; align-items: center; gap: 10px; }
+
+.avatar {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #dcefe2;
+    color: var(--green);
+    font-weight: 900;
+}
+
+.user-line strong, .user-line small { display: block; overflow-wrap: anywhere; }
+.user-line strong { font-size: 12px; }
+.user-line small { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.logout {
+    margin-top: 13px;
+    padding: 9px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 100%;
+    font-size: 12px;
+    color: #58685f;
+    font-weight: 700;
+}
+
+.main { min-width: 0; }
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #ffffffed;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 19px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.topbar h1 { font-size: 21px; }
+
+.topbar p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.top-actions { display: flex; align-items: center; gap: 9px; }
+
+.role-chip {
+    border-radius: 20px;
+    padding: 7px 10px;
+    background: var(--light);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.notify-btn {
+    position: relative;
+    height: 39px;
+    width: 39px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.notify-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ce4141;
+    color: white;
+    border-radius: 20px;
+    padding: 3px 5px;
+    font-size: 9px;
+}
+
+.content { max-width: 1250px; margin: auto; padding: 25px 28px; }
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.welcome h2 { font-size: 23px; }
+.welcome p { margin-top: 7px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 13px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 17px;
+    min-width: 0;
+}
+
+.stat-label { color: var(--muted); font-size: 11px; font-weight: 700; }
+.stat-value { font-size: 27px; font-weight: 900; margin-top: 10px; }
+.stat-foot { font-size: 10px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    min-width: 0;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.panel-head h3 { font-size: 15px; }
+.panel-head p { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+.text-btn {
+    border: none;
+    background: none;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 18px;
+}
+
+.balance-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1ed;
+}
+
+.balance-row:last-child { border-bottom: none; }
+
+.balance-icon {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+    border-radius: 11px;
+    background: #f0f6f0;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.balance-info { flex: 1; min-width: 0; }
+.balance-info strong { display: block; font-size: 12px; }
+.balance-info small { display: block; font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+.progress {
+    height: 5px;
+    background: #edf1ed;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress span { display: block; height: 100%; background: #66a582; }
+
+.balance-number {
+    color: var(--green);
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.quick-actions { display: grid; gap: 10px; }
+
+.quick-action {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.quick-action:hover { background: #f5faf5; }
+
+.quick-action .icon {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    background: var(--light);
+    border-radius: 10px;
+}
+
+.quick-action strong { display: block; font-size: 12px; }
+.quick-action small { display: block; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th { background: #fafcf9; color: #8a968d; text-align: left; font-size: 10px; text-transform: uppercase; padding: 12px 10px; }
+td { padding: 14px 10px; border-bottom: 1px solid #edf1ed; font-size: 12px; vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+
+.status {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 6px 9px;
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.pending { background: #fff4d9; color: #94650d; }
+.approved { background: #e4f5ea; color: #167449; }
+.rejected { background: #ffeded; color: #b33333; }
+
+.alert {
+    background: #fff7e6;
+    color: #805715;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 13px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.leave-form { max-width: 780px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.days-preview {
+    margin-top: 17px;
+    padding: 13px;
+    border-radius: 9px;
+    background: #f0f7f1;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+}
+
+.days-preview strong { color: var(--green); }
+
+.leave-card {
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.leave-card:last-child { margin-bottom: 0; }
+
+.leave-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.leave-card h4 { font-size: 13px; margin-bottom: 6px; }
+.leave-card p { font-size: 12px; color: var(--muted); line-height: 1.7; margin-top: 8px; overflow-wrap: anywhere; }
+.leave-meta { margin-top: 8px; font-size: 10px; color: var(--muted); }
+.review-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.review-actions .btn { font-size: 11px; padding: 9px 12px; }
+
+.notification {
+    display: flex;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.notification:last-child { border-bottom: none; }
+
+.notification-icon {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+    display: grid;
+    place-items: center;
+    background: var(--light);
+    border-radius: 11px;
+}
+
+.notification strong { font-size: 12px; }
+.notification p { color: var(--muted); font-size: 12px; line-height: 1.7; margin-top: 5px; }
+.notification small { color: #9aa49d; font-size: 10px; display: block; margin-top: 6px; }
+
+.empty {
+    padding: 32px 12px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.empty strong { display: block; color: var(--ink); font-size: 15px; margin-bottom: 5px; }
+.footer-note { font-size: 10px; color: #929e95; line-height: 1.7; margin-top: 17px; }
+
+.toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #183e2f;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-size: 12px;
+    z-index: 10;
+    box-shadow: 0 8px 25px #0002;
+    max-width: calc(100% - 25px);
+    text-align: center;
+}
+
+@media(max-width:1050px) {
+    .app { grid-template-columns: 200px minmax(0,1fr); }
+    .stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .content { padding: 20px; }
+}
+
+@media(max-width:650px) {
+    .app { display: block; padding-bottom: 68px; }
+
+    .sidebar {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 62px;
+        min-height: 0;
+        padding: 5px;
+        border-right: 0;
+        border-top: 1px solid var(--border);
+        z-index: 8;
+        display: block;
+    }
+
+    .sidebar .brand, .nav-label, .user-box { display: none; }
+
+    .nav { display: flex; justify-content: space-around; gap: 3px; }
+
+    .nav button {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        gap: 2px;
+        padding: 6px 1px;
+        font-size: 9px;
+    }
+
+    .nav button .nav-icon { font-size: 17px; }
+
+    .nav .count { display: none; }
+
+    .topbar { position: static; padding: 15px; }
+    .topbar h1 { font-size: 18px; }
+    .topbar p { font-size: 10px; }
+    .role-chip { display: none; }
+
+    .content { padding: 16px 12px; }
+    .welcome { align-items: flex-start; flex-direction: column; }
+    .welcome h2 { font-size: 21px; }
+    .stats { gap: 9px; }
+    .stat { padding: 13px; }
+    .stat-value { font-size: 23px; }
+    .stat-label { font-size: 10px; }
+    .panel { padding: 14px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .leave-card-head { flex-direction: column; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIGN IN / REGISTER -->
+<section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+        <div class="brand">LeaveFlow<span>.</span></div>
+        <div class="auth-mark">📅</div>
+
+        <form id="loginForm">
+            <h1>Welcome back</h1>
+            <p class="subtext">Sign in to view your leave balance, apply for leave and track manager decisions.</p>
+
+            <div class="field">
+                <label for="loginUsername">Username</label>
+                <input id="loginUsername" required autocomplete="username" placeholder="Enter username">
+            </div>
+
+            <div class="field">
+                <label for="loginPassword">Password</label>
+                <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Enter password">
+            </div>
+
+            <button class="btn full" type="submit">Sign In →</button>
+            <p id="loginError" class="error"></p>
+
+            <p class="switch">New employee?
+                <button class="link-btn" type="button" onclick="showRegister()">Create account</button>
+            </p>
+        </form>
+
+        <form id="registerForm" class="hidden">
+            <h1>Create employee account</h1>
+            <p class="subtext">Register first, then sign in to the leave management system.</p>
+
+            <div class="field">
+                <label for="regName">Full Name</label>
+                <input id="regName" required maxlength="60" placeholder="Your name">
+            </div>
+
+            <div class="field">
+                <label for="regUsername">Username</label>
+                <input id="regUsername" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" placeholder="letters, numbers or _">
+            </div>
+
+            <div class="field">
+                <label for="regPassword">Password (minimum 6 characters)</label>
+                <input id="regPassword" type="password" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="field">
+                <label for="regDepartment">Department</label>
+                <input id="regDepartment" required maxlength="50" placeholder="e.g. IT">
+            </div>
+
+            <button class="btn full" type="submit">Create Account</button>
+            <p id="registerError" class="error"></p>
+
+            <p class="switch">Already registered?
+                <button class="link-btn" type="button" onclick="showLogin()">Sign in</button>
+            </p>
+        </form>
+
+        <div class="demo">
+            <strong>Demo Login Details</strong><br>
+            Employee: <strong>akshaya</strong> / <strong>emp123</strong><br>
+            Manager: <strong>manager</strong> / <strong>mgr123</strong><br>
+            <small>Demo only. Data is saved in this browser.</small>
+        </div>
+    </div>
+</section>
+
+<!-- APPLICATION AFTER LOGIN -->
+<div id="app" class="app hidden">
+    <aside class="sidebar">
+        <div class="brand">LeaveFlow<span>.</span></div>
+        <div class="nav-label">Workspace</div>
+        <nav id="nav" class="nav"></nav>
+
+        <div class="user-box">
+            <div class="user-line">
+                <div id="sideAvatar" class="avatar">A</div>
+                <div>
+                    <strong id="sideName">Employee</strong>
+                    <small id="sideRole">Employee</small>
+                </div>
+            </div>
+            <button class="logout" onclick="logout()">↪ Log out</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Leave management workspace</p>
+            </div>
+            <div class="top-actions">
+                <span id="roleChip" class="role-chip">EMPLOYEE</span>
+                <button class="notify-btn" id="topNotifications" title="Notifications" aria-label="Notifications">
+                    ♧
+                    <span id="notifCount" class="notify-count hidden">0</span>
+                </button>
+            </div>
+        </header>
+
+        <div id="content" class="content"></div>
+    </main>
+</div>
+
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+const DB_KEY = "leaveflow_database_v2";
+const SESSION_KEY = "leaveflow_session_v2";
+
+const LEAVE_TYPES = {
+    casual: { label: "Casual Leave", icon: "🌿", total: 12 },
+    medical: { label: "Medical Leave", icon: "🩺", total: 10 },
+    annual: { label: "Annual Leave", icon: "🌴", total: 15 }
+};
+
+function initialDB() {
+    return {
+        users: [
+            {
+                id: "employee_1",
+                name: "Akshaya S",
+                username: "akshaya",
+                password: "emp123",
+                department: "Information Technology",
+                role: "employee",
+                balances: { casual: 12, medical: 10, annual: 15 }
+            },
+            {
+                id: "manager_1",
+                name: "Admin Manager",
+                username: "manager",
+                password: "mgr123",
+                department: "Human Resources",
+                role: "manager"
+            }
+        ],
+        leaves: [],
+        notifications: []
+    };
+}
+
+function loadDB() {
+    try {
+        const saved = localStorage.getItem(DB_KEY);
+        if (!saved) {
+            const data = initialDB();
+            localStorage.setItem(DB_KEY, JSON.stringify(data));
+            return data;
+        }
+
+        const data = JSON.parse(saved);
+        if (!data.users || !data.leaves || !data.notifications) {
+            throw new Error("Invalid data");
+        }
+
+        return data;
+    } catch {
+        const data = initialDB();
+        localStorage.setItem(DB_KEY, JSON.stringify(data));
+        return data;
+    }
+}
+
+let db = loadDB();
+let currentUser = null;
+let activePage = "dashboard";
+let toastTimer;
+
+function saveDB() {
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+}
+
+function getUser(id) {
+    return db.users.find(user => user.id === id);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
+
+function today() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
+}
+
+function daysBetween(from, to) {
+    if (!from || !to) return 0;
+    const a = new Date(from + "T00:00:00");
+    const b = new Date(to + "T00:00:00");
+    const ms = b.getTime() - a.getTime();
+
+    if (!Number.isFinite(ms) || ms < 0) return 0;
+    return Math.floor(ms / 86400000) + 1;
+}
+
+function displayDate(value) {
+    if (!value) return "—";
+
+    return new Date(value + "T00:00:00").toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function statusTag(status) {
+    return `<span class="status ${status.toLowerCase()}">${escapeHTML(status)}</span>`;
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.add("hidden"), 2600);
+}
+
+/* LOGIN AND REGISTRATION */
+
+function showRegister() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("registerForm").classList.remove("hidden");
+    document.getElementById("loginError").textContent = "";
+}
+
+function showLogin() {
+    document.getElementById("registerForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+    document.getElementById("registerError").textContent = "";
+}
+
+document.getElementById("loginForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+
+    const user = db.users.find(u =>
+        u.username.toLowerCase() === username && u.password === password
+    );
+
+    if (!user) {
+        document.getElementById("loginError").textContent =
+            "Invalid username or password. Try the demo credentials.";
+        return;
+    }
+
+    loginUser(user);
+});
+
+document.getElementById("registerForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = document.getElementById("regName").value.trim();
+    const username = document.getElementById("regUsername").value.trim().toLowerCase();
+    const password = document.getElementById("regPassword").value;
+    const department = document.getElementById("regDepartment").value.trim();
+    const error = document.getElementById("registerError");
+
+    if (db.users.some(u => u.username.toLowerCase() === username)) {
+        error.textContent = "Username already exists. Choose a different one.";
+        return;
+    }
+
+    db.users.push({
+        id: "emp_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+        name,
+        username,
+        password,
+        department,
+        role: "employee",
+        balances: { casual: 12, medical: 10, annual: 15 }
+    });
+
+    saveDB();
+    event.target.reset();
+
+    const newUser = db.users[db.users.length - 1];
+    loginUser(newUser);
+});
+
+function loginUser(user) {
+    currentUser = user;
+    localStorage.setItem(SESSION_KEY, user.id);
+    activePage = "dashboard";
+
+    document.getElementById("authScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("sideName").textContent = user.name;
+    document.getElementById("sideRole").textContent =
+        user.role === "manager" ? "Manager" : user.department;
+    document.getElementById("sideAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+    document.getElementById("roleChip").textContent =
+        user.role.toUpperCase();
+
+    renderPage();
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem(SESSION_KEY);
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("authScreen").classList.remove("hidden");
+    document.getElementById("loginPassword").value = "";
+    showLogin();
+}
+
+/* NAVIGATION */
+
+function navItems() {
+    if (currentUser.role === "manager") {
+        return [
+            ["dashboard", "▦", "Dashboard"],
+            ["pending", "◷", "Pending Requests"],
+            ["all", "☷", "All Requests"],
+            ["notifications", "♧", "Notifications"]
+        ];
+    }
+
+    return [
+        ["dashboard", "▦", "Dashboard"],
+        ["apply", "＋", "Apply for Leave"],
+        ["myLeaves", "☷", "My Requests"],
+        ["notifications", "♧", "Notifications"]
+    ];
+}
+
+function unreadCount() {
+    return db.notifications.filter(n =>
+        n.userId === currentUser.id && !n.read
+    ).length;
+}
+
+function renderNav() {
+    const pendingCount = db.leaves.filter(l => l.status === "Pending").length;
+    const items = navItems();
+
+    document.getElementById("nav").innerHTML =
+        `<div class="nav-label">Workspace</div>` +
+        items.map(([id, icon, label]) => {
+            let count = 0;
+
+            if (id === "pending" && currentUser.role === "manager") {
+                count = pendingCount;
+            }
+
+            if (id === "notifications") {
+                count = unreadCount();
+            }
+
+            return `<button data-page="${id}" class="${activePage === id ? "active" : ""}">
+                <span class="nav-icon">${icon}</span>
+                <span>${label}</span>
+                ${count ? `<span class="count">${count}</span>` : ""}
+            </button>`;
+        }).join("");
+
+    document.getElementById("notifCount").textContent = unreadCount();
+    document.getElementById("notifCount").classList.toggle("hidden", unreadCount() === 0);
+}
+
+document.getElementById("nav").addEventListener("click", event => {
+    const button = event.target.closest("[data-page]");
+    if (!button) return;
+
+    activePage = button.dataset.page;
+    renderPage();
+});
+
+document.getElementById("topNotifications").addEventListener("click", () => {
+    activePage = "notifications";
+    renderPage();
+});
+
+/* PAGE TITLE */
+
+const TITLES = {
+    dashboard: ["Dashboard", "Your leave management workspace"],
+    apply: ["Apply for Leave", "Submit a new request to your manager"],
+    myLeaves: ["My Leave Requests", "Track every application and its status"],
+    pending: ["Pending Requests", "Review and decide on employee applications"],
+    all: ["All Leave Requests", "View the organization leave history"],
+    notifications: ["Notifications", "Updates about leave applications and decisions"]
+};
+
+function renderPage() {
+    if (!currentUser) return;
+
+    const [title, subtitle] = TITLES[activePage] || TITLES.dashboard;
+    document.getElementById("pageTitle").textContent = title;
+    document.getElementById("pageSubtitle").textContent = subtitle;
+
+    renderNav();
+
+    const content = document.getElementById("content");
+
+    if (currentUser.role === "manager") {
+        if (activePage === "pending") content.innerHTML = managerRequests(true);
+        else if (activePage === "all") content.innerHTML = managerRequests(false);
+        else if (activePage === "notifications") content.innerHTML = notificationsPage();
+        else content.innerHTML = managerDashboard();
+    } else {
+        if (activePage === "apply") content.innerHTML = applyPage();
+        else if (activePage === "myLeaves") content.innerHTML = employeeRequests();
+        else if (activePage === "notifications") content.innerHTML = notificationsPage();
+        else content.innerHTML = employeeDashboard();
+    }
+
+    bindContentEvents();
+}
+
+/* EMPLOYEE DASHBOARD */
+
+function employeeDashboard() {
+    const leaves = db.leaves.filter(l => l.userId === currentUser.id);
+    const pending = leaves.filter(l => l.status === "Pending").length;
+    const approved = leaves.filter(l => l.status === "Approved").length;
+
+    const stats = `
+        <div class="welcome">
+            <div>
+                <h2>Welcome back, ${escapeHTML(currentUser.name.split(" ")[0])} 👋</h2>
+                <p>Check your leave balances and track manager decisions here.</p>
+            </div>
+            <button class="btn" data-go="apply">＋ Apply for Leave</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><div class="stat-label">Pending Requests</div><div class="stat-value">${pending}</div><div class="stat-foot">Waiting for manager decision</div></div>
+            <div class="stat"><div class="stat-label">Approved Leaves</div><div class="stat-value">${approved}</div><div class="stat-foot">Approved applications</div></div>
+            <div class="stat"><div class="stat-label">Casual Balance</div><div class="stat-value">${currentUser.balances.casual}</div><div class="stat-foot">Days remaining</div></div>
+            <div class="stat"><div class="stat-label">Medical Balance</div><div class="stat-value">${currentUser.balances.medical}</div><div class="stat-foot">Days remaining</div></div>
+        </div>`;
+
+    const balances = Object.entries(LEAVE_TYPES).map(([key, type]) => {
+        const remaining = currentUser.balances[key] ?? type.total;
+        const used = type.total - remaining;
+        const width = Math.max(0, Math.min(100, used / type.total * 100));
+
+        return `<div class="balance-row">
+            <div class="balance-icon">${type.icon}</div>
+            <div class="balance-info">
+                <strong>${type.label}</strong>
+                <small>${used} used of ${type.total} days</small>
+                <div class="progress"><span style="width:${width}%"></span></div>
+            </div>
+            <div class="balance-number">${remaining} <small style="font-size:10px">days</small></div>
+        </div>`;
+    }).join("");
+
+    const recent = leaves.slice().sort((a,b) => b.createdAt-a.createdAt).slice(0,4);
+
+    return `${stats}
+        <div class="dashboard-grid">
+            <section class="panel">
+                <div class="panel-head"><div><h3>Leave Balance</h3><p>Your current leave entitlement</p></div></div>
+                ${balances}
+            </section>
+
+            <section class="panel">
+                <div class="panel-head"><div><h3>Quick Actions</h3><p>Manage your leave</p></div></div>
+                <div class="quick-actions">
+                    <button class="quick-action" data-go="apply"><span class="icon">📝</span><span><strong>Apply for Leave</strong><small>Submit a new request</small></span></button>
+                    <button class="quick-action" data-go="myLeaves"><span class="icon">📋</span><span><strong>My Requests</strong><small>Track approval status</small></span></button>
+                    <button class="quick-action" data-go="notifications"><span class="icon">🔔</span><span><strong>Notifications</strong><small>${unreadCount()} unread message(s)</small></span></button>
+                </div>
+            </section>
+        </div>
+
+        <section class="panel" style="margin-top:18px">
+            <div class="panel-head"><div><h3>Recent Requests</h3><p>Your latest leave applications</p></div><button class="text-btn" data-go="myLeaves">View all →</button></div>
+            ${recent.length ? `<div class="table-wrap"><table>
+                <thead><tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th></tr></thead>
+                <tbody>${recent.map(l => `<tr>
+                    <td>${escapeHTML(LEAVE_TYPES[l.type].label)}</td>
+                    <td>${displayDate(l.from)} – ${displayDate(l.to)}</td>
+                    <td>${l.days}</td><td>${statusTag(l.status)}</td>
+                </tr>`).join("")}</tbody>
+            </table></div>` : `<div class="empty"><strong>No leave requests yet</strong>Apply for leave to see your requests here.</div>`}
+        </section>
+        <p class="footer-note">Leave balance is deducted only after manager approval. This demo counts calendar days, including weekends.</p>`;
+}
+
+/* LEAVE APPLICATION FORM */
+
+function applyPage() {
+    return `<div class="welcome"><div><h2>Request time off</h2><p>Your application will be sent to the manager for approval.</p></div></div>
+        <div class="alert">📌 Your request stays <strong>Pending</strong> until the manager approves or rejects it. Leave balance is not deducted before approval.</div>
+        <section class="panel leave-form">
+            <form id="leaveForm">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="leaveType">Leave Type</label>
+                        <select id="leaveType" required>
+                            ${Object.entries(LEAVE_TYPES).map(([key,type]) =>
+                                `<option value="${key}">${type.label} — ${currentUser.balances[key]} days available</option>`
+                            ).join("")}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="leaveFrom">Start Date</label>
+                        <input type="date" id="leaveFrom" min="${today()}" required>
+                    </div>
+                    <div class="field">
+                        <label for="leaveTo">End Date</label>
+                        <input type="date" id="leaveTo" min="${today()}" required>
+                    </div>
+                    <div class="field">
+                        <label for="leaveReason">Reason</label>
+                        <input id="leaveReason" maxlength="160" required placeholder="Brief reason for leave">
+                    </div>
+                </div>
+                <div class="days-preview"><span>Requested duration</span><strong id="daysPreview">Choose your dates</strong></div>
+                <p id="leaveError" class="error"></p>
+                <button class="btn" type="submit" style="margin-top:18px">Submit for Approval →</button>
+            </form>
+        </section>`;
+}
+
+/* REQUEST CARDS */
+
+function leaveCard(leave, showEmployee, allowReview) {
+    const employee = getUser(leave.userId);
+    const type = LEAVE_TYPES[leave.type] || {label:leave.type};
+
+    return `<article class="leave-card">
+        <div class="leave-card-head">
+            <div>
+                <h4>${escapeHTML(type.label)} · ${leave.days} day(s)</h4>
+                <div class="leave-meta">${displayDate(leave.from)} → ${displayDate(leave.to)}</div>
+            </div>
+            ${statusTag(leave.status)}
+        </div>
+        ${showEmployee ? `<p><strong>Employee:</strong> ${escapeHTML(employee?.name || "Unknown")} (@${escapeHTML(employee?.username || "")}) · ${escapeHTML(employee?.department || "")}</p>` : ""}
+        <p><strong>Reason:</strong> ${escapeHTML(leave.reason)}</p>
+        <div class="leave-meta">Request ID: ${escapeHTML(leave.id)} · Submitted ${new Date(leave.createdAt).toLocaleString()}</div>
+        ${leave.managerNote ? `<p><strong>Manager note:</strong> ${escapeHTML(leave.managerNote)}</p>` : ""}
+        ${allowReview ? `<div class="review-actions">
+            <button class="btn approve" data-review="approve" data-id="${escapeHTML(leave.id)}">✓ Approve</button>
+            <button class="btn reject" data-review="reject" data-id="${escapeHTML(leave.id)}">✕ Reject</button>
+        </div>` : ""}
+    </article>`;
+}
+
+function employeeRequests() {
+    const leaves = db.leaves.filter(l => l.userId === currentUser.id).sort((a,b) => b.createdAt-a.createdAt);
+
+    return `<div class="welcome"><div><h2>My Leave Requests</h2><p>Check the decision and any note from your manager.</p></div><button class="btn" data-go="apply">＋ New Request</button></div>
+        <section class="panel">
+            ${leaves.length ? leaves.map(l => leaveCard(l,false,false)).join("") : `<div class="empty"><strong>No applications yet</strong>Submitted requests and manager decisions will appear here.</div>`}
+        </section>`;
+}
+
+/* MANAGER DASHBOARD */
+
+function managerDashboard() {
+    const pending = db.leaves.filter(l => l.status === "Pending");
+    const approved = db.leaves.filter(l => l.status === "Approved").length;
+    const rejected = db.leaves.filter(l => l.status === "Rejected").length;
+    const employeeCount = db.users.filter(u => u.role === "employee").length;
+
+    return `<div class="welcome"><div><h2>Manager Overview 👋</h2><p>Review employee applications and send approval or rejection decisions.</p></div><button class="btn" data-go="pending">Review Requests →</button></div>
+        <div class="stats">
+            <div class="stat"><div class="stat-label">Pending Requests</div><div class="stat-value">${pending.length}</div><div class="stat-foot">Waiting for your decision</div></div>
+            <div class="stat"><div class="stat-label">Employees</div><div class="stat-value">${employeeCount}</div><div class="stat-foot">Registered users</div></div>
+            <div class="stat"><div class="stat-label">Approved</div><div class="stat-value">${approved}</div><div class="stat-foot">Approved applications</div></div>
+            <div class="stat"><div class="stat-label">Rejected</div><div class="stat-value">${rejected}</div><div class="stat-foot">Rejected applications</div></div>
+        </div>
+        <section class="panel">
+            <div class="panel-head"><div><h3>Pending Applications</h3><p>Approve or reject submitted requests</p></div><button class="text-btn" data-go="pending">View all →</button></div>
+            ${pending.length ? pending.slice(0,5).map(l => leaveCard(l,true,true)).join("") : `<div class="empty"><strong>All caught up!</strong>There are no pending requests.</div>`}
+        </section>`;
+}
+
+function managerRequests(onlyPending) {
+    const leaves = db.leaves.filter(l => !onlyPending || l.status === "Pending")
+        .sort((a,b) => b.createdAt-a.createdAt);
+
+    return `<div class="welcome"><div><h2>${onlyPending ? "Pending Requests" : "All Leave Requests"}</h2><p>Review each application and record your decision.</p></div></div>
+        <section class="panel">
+            ${leaves.length ? leaves.map(l => leaveCard(l,true,onlyPending && l.status === "Pending")).join("") : `<div class="empty"><strong>No ${onlyPending ? "pending " : ""}requests</strong>New employee applications will appear here.</div>`}
+        </section>`;
+}
+
+/* NOTIFICATIONS */
+
+function notificationsPage() {
+    const notes = db.notifications.filter(n => n.userId === currentUser.id).sort((a,b) => b.createdAt-a.createdAt);
+
+    // Opening this page marks displayed notifications as read.
+    notes.forEach(n => n.read = true);
+    saveDB();
+
+    return `<div class="welcome"><div><h2>Notifications</h2><p>Leave submission, approval and rejection updates appear here.</p></div></div>
+        <section class="panel">
+            ${notes.length ? notes.map(n => `<div class="notification">
+                <div class="notification-icon">${n.kind === "approved" ? "✅" : n.kind === "rejected" ? "❌" : "🔔"}</div>
+                <div><strong>${escapeHTML(n.title)}</strong><p>${escapeHTML(n.message)}</p><small>${new Date(n.createdAt).toLocaleString()}</small></div>
+            </div>`).join("") : `<div class="empty"><strong>No notifications yet</strong>Updates will show here when an application is submitted or reviewed.</div>`}
+        </section>`;
+}
+
+function addNotification(userId, kind, title, message) {
+    db.notifications.push({
+        id: "N" + Date.now() + Math.random().toString(36).slice(2,5),
+        userId, kind, title, message,
+        read: false,
+        createdAt: Date.now()
+    });
+}
+
+/* MANAGER APPROVAL / REJECTION */
+
+function reviewLeave(id, decision) {
+    if (currentUser.role !== "manager") return;
+
+    const leave = db.leaves.find(l => l.id === id);
+
+    if (!leave || leave.status !== "Pending") return;
+
+    const employee = getUser(leave.userId);
+
+    if (!employee) {
+        alert("Employee account not found.");
+        return;
+    }
+
+    const type = LEAVE_TYPES[leave.type];
+
+    if (decision === "approve") {
+        const balance = employee.balances[leave.type] ?? 0;
+
+        if (balance < leave.days) {
+            alert(`Cannot approve: employee has only ${balance} day(s) remaining.`);
+            return;
+        }
+
+        if (!confirm(`Approve ${employee.name}'s ${type.label} for ${leave.days} day(s)?`)) return;
+
+        employee.balances[leave.type] = balance - leave.days;
+        leave.status = "Approved";
+        leave.managerNote = "Approved by manager.";
+
+        addNotification(
+            employee.id,
+            "approved",
+            "Leave request approved ✅",
+            `Your ${type.label} from ${displayDate(leave.from)} to ${displayDate(leave.to)} has been approved for ${leave.days} day(s). Your leave balance has been updated.`
+        );
+
+        saveDB();
+        renderPage();
+        showToast("Approved! Employee notification has been created.");
+        return;
+    }
+
+    const note = prompt("Enter rejection reason (optional):", "Please discuss with your manager.");
+
+    if (note === null) return;
+
+    leave.status = "Rejected";
+    leave.managerNote = note.trim() || "No reason provided.";
+
+    addNotification(
+        employee.id,
+        "rejected",
+        "Leave request rejected ❌",
+        `Your ${type.label} from ${displayDate(leave.from)} to ${displayDate(leave.to)} has been rejected. Manager note: ${leave.managerNote}`
+    );
+
+    saveDB();
+    renderPage();
+    showToast("Rejected! Employee notification has been created.");
+}
+
+/* PAGE EVENTS */
+
+function bindContentEvents() {
+    const content = document.getElementById("content");
+
+    content.querySelectorAll("[data-go]").forEach(button => {
+        button.addEventListener("click", () => {
+            activePage = button.dataset.go;
+            renderPage();
+        });
+    });
+
+    content.querySelectorAll("[data-review]").forEach(button => {
+        button.addEventListener("click", () => {
+            reviewLeave(button.dataset.id, button.dataset.review);
+        });
+    });
+
+    const form = document.getElementById("leaveForm");
+
+    if (!form) return;
+
+    const typeSelect = document.getElementById("leaveType");
+    const from = document.getElementById("leaveFrom");
+    const to = document.getElementById("leaveTo");
+    const preview = document.getElementById("daysPreview");
+    const error = document.getElementById("leaveError");
+
+    from.addEventListener("change", () => {
+        to.min = from.value || today();
+        updatePreview();
+    });
+
+    to.addEventListener("change", updatePreview);
+    typeSelect.addEventListener("change", updatePreview);
+
+    function updatePreview() {
+        const days = daysBetween(from.value, to.value);
+        const available = currentUser.balances[typeSelect.value] ?? 0;
+
+        preview.textContent = days > 0 ? `${days} calendar day(s)` : "Choose valid dates";
+        error.textContent = "";
+
+        if (from.value && from.value < today()) {
+            error.textContent = "Please choose today or a future date.";
+        } else if (from.value && to.value && days < 1) {
+            error.textContent = "End date must be on or after start date.";
+        } else if (days > available) {
+            error.textContent = `You have only ${available} day(s) available for this leave type.`;
+        }
+    }
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const type = typeSelect.value;
+        const start = from.value;
+        const end = to.value;
+        const reason = document.getElementById("leaveReason").value.trim();
+        const days = daysBetween(start, end);
+        const available = currentUser.balances[type] ?? 0;
+
+        if (!start || !end || days < 1) {
+            error.textContent = "Please choose valid start and end dates.";
+            return;
+        }
+
+        if (start < today()) {
+            error.textContent = "Please select today or a future date.";
+            return;
+        }
+
+        if (days > available) {
+            error.textContent = `Only ${available} day(s) are available for this leave type.`;
+            return;
+        }
+
+        const overlapping = db.leaves.some(l =>
+            l.userId === currentUser.id &&
+            ["Pending", "Approved"].includes(l.status) &&
+            start <= l.to && end >= l.from
+        );
+
+        if (overlapping) {
+            error.textContent = "These dates overlap an existing pending or approved leave request.";
+            return;
+        }
+
+        const leave = {
+            id: "LV" + Date.now().toString().slice(-8),
+            userId: currentUser.id,
+            type,
+            from: start,
+            to: end,
+            days,
+            reason,
+            status: "Pending",
+            managerNote: "",
+            createdAt: Date.now()
+        };
+
+        db.leaves.push(leave);
+
+        // Notify manager that a new leave application has arrived.
+        db.users.filter(u => u.role === "manager").forEach(manager => {
+            addNotification(
+                manager.id,
+                "submitted",
+                "New leave request received",
+                `${currentUser.name} submitted a ${LEAVE_TYPES[type].label} request for ${days} day(s), from ${displayDate(start)} to ${displayDate(end)}.`
+            );
+        });
+
+        saveDB();
+        showToast("Leave request submitted successfully!");
+
+        activePage = "myLeaves";
+        renderPage();
+    });
+}
+
+/* INITIALISATION */
+
+document.getElementById("topNotifications").addEventListener("click", () => {
+    activePage = "notifications";
+    renderPage();
+});
+
+const sessionUserId = localStorage.getItem(SESSION_KEY);
+const restoredUser = sessionUserId ? getUser(sessionUserId) : null;
+
+if (restoredUser) {
+    loginUser(restoredUser);
+} else {
+    document.getElementById("authScreen").classList.remove("hidden");
+    document.getElementById("app").classList.add("hidden");
+}
+</script>
+</body>
+</html>
